@@ -1,0 +1,6 @@
+let g:netrw_dirhistmax  =10
+let g:netrw_dirhist_cnt =4
+let g:netrw_dirhist_1='/home/oldrev/lib/python2.7/site-packages/ZSI-2.0_rc3-py2.7.egg-info'
+let g:netrw_dirhist_2='/home/oldrev/sandbox/sphinx1/build'
+let g:netrw_dirhist_3='/home/oldrev/dev/docs/wycherp-docs/install-manual'
+let g:netrw_dirhist_4='/home/oldrev/dev/docs/wycherp-docs/install-manual/source'

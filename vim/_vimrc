@@ -1,0 +1,290 @@
+scriptencoding utf-8
+
+"编码及语言相关
+
+"下面设置编码，非常重要
+set fileformats=unix,dos
+set fileencodings=ucs-bom,utf-8,gbk,cp936 
+set fileencoding=utf-8
+set ambiwidth=double
+
+"如果是 Windows 系统就设置为 DOS 格式，但是这样不太好，全部统一为 unix 格式了
+"if has("windows")
+"    set fileformat=dos
+"else
+"    set fileformat=unix
+"endif
+
+"设置终端编码
+if (has("win32") || has("win64")) && !has("gui")
+    set fileencoding=utf-8
+    set termencoding=GBK
+    set langmenu=zh_CN.GBK
+    language messages zh_CN.GBK
+else
+    set t_Co=256
+    set encoding=utf-8
+    set termencoding=utf-8
+    set langmenu=zh_CN.utf-8
+    language messages zh_CN.utf-8
+endif
+
+if version >= 603
+	set helplang=cn
+endif
+
+
+source $VIMRUNTIME/delmenu.vim
+source $VIMRUNTIME/menu.vim
+
+set smartcase
+
+"if exists('&t_SI')
+"    let &t_SI = "\<Esc>]12;lightgoldenrod\x7"
+"    let &t_EI = "\<Esc>]12;grey80\x7"
+"endif
+"-----------------------------------------------------------------------
+" settings
+"-----------------------------------------------------------------------
+"让默认操作使用系统剪贴版
+"set clipboard+=unnamed " set clipboard
+
+" Don't be compatible with vi
+set nocompatible
+
+
+let Tlist_Auto_Open=0
+
+
+map <F2> :set hlsearch!<CR>
+
+map <F7> :wa<CR>:make<CR>
+imap <F7> <ESC>:wa<CR>:make<CR>
+
+
+nnoremap <silent> <F3> :Grep<CR> 
+nnoremap <silent> <F8> :TlistToggle<CR>
+nnoremap <C-Enter> :WinFullScreen<CR> 
+
+map <F9> :NERDTreeToggle<CR>
+
+map <F4> :w<CR>
+imap <F4> <ESC>:w<CR>a
+
+
+" Enable a nice big viminfo fileset guifont=YaHei_Consolas_Hybrid:h13:cGB2312
+set viminfo='1000,f1,:1000,/1000
+set history=500
+
+" Make backspace delete lots of things
+set backspace=indent,eol,start
+
+" Create backups
+"set backup
+
+" Show us the command we're typing
+set showcmd
+
+" Highlight matching parens
+set showmatch
+
+" Search options: incremental search, highlight search
+" set hlsearch
+
+" Selective case insensitivity
+set ignorecase
+set infercase
+
+" Show full tags when doing search completion
+set showfulltag
+
+" Speed up macros
+set lazyredraw
+
+" No annoying error noises
+set noerrorbells
+set visualbell t_vb=
+if has("autocmd")
+    autocmd GUIEnter * set visualbell t_vb=
+endif
+
+" Try to show at least three lines and two columns of context when
+" scrolling
+set scrolloff=3
+set sidescrolloff=2
+
+" Wrap on these
+set whichwrap+=<,>,[,]
+
+" Use the cool tab complete menu
+set wildmenu
+set wildignore+=*.o,*~,*.obj
+set suffixes+=.in,.a
+
+" Allow edit buffers to be hidden
+set hidden
+
+" 1 height windows
+set winminheight=1
+
+" Enable syntax highlighting
+if has("syntax")
+    syntax on
+endif
+
+" Set our fonts
+if has("gui")
+	if has("windows")
+        set guifont=Droid\ Sans\ Mono\ 11
+	else
+        set guifont=Droid\ Sans\ Mono\ 11
+	endif
+endif
+
+"中文效果测试"
+" Try to load a nice colourscheme
+
+" No icky toolbar, menu or scrollbars in the GUI
+if has('gui')
+	set guioptions+=e
+    set guioptions+=b
+    set guioptions-=T
+end
+
+" By default, go for an indent of 4 tab stuff
+set expandtab 
+set shiftwidth=4
+set tabstop=4
+
+" Do clever indent things. Don't make a # force column zero.
+inoremap # X<BS>#
+
+" Enable folds
+"if has("folding")
+"    set foldenable
+"    set foldmethod=indent
+"endif
+
+" Syntax when printing
+set popt+=syntax:y
+
+filetype on
+filetype plugin on
+filetype indent on
+
+" Enable modelines only on secure vim versions
+if (v:version >= 604)
+    set modeline
+else
+    set nomodeline
+endif
+
+" Nice statusbar
+set laststatus=2
+set statusline=
+set statusline+=#%n\                " buffer number
+set statusline+=%f\                          " file name
+set statusline+=%h%1*%m%r%w%0*               " flags
+set statusline+=\[%{strlen(&ft)?&ft:'none'}, " filetype
+set statusline+=%{&fileencoding},                " fileencoding
+set statusline+=%{&fileformat}]              " file format
+if filereadable(expand("$VIM/vimfiles/plugin/vimbuddy.vim"))
+    set statusline+=\ %{VimBuddy()}          " vim buddy
+endif
+set statusline+=%=                           " right align
+set statusline+=0x%-8B\                   " current char
+set statusline+=%-14.(%l,%c%V%)\ %<%P        " offset
+
+"set statusline=%<%f%=\ [%1*%M%*%n%R%H]\ %-19(%3l,%02c%03V%)%O'%02b'
+
+
+
+
+set autoindent              
+set cindent shiftwidth=4
+set autoindent shiftwidth=4 
+"set mouse=a             " use the mouse
+set sm
+
+" DISPLAY OPTIONS
+set number        
+set ruler          
+"set notitle    
+
+set wrap     
+
+if (has("gui"))
+    colorscheme molokai
+    set cursorline "高亮光标所在的行
+else              
+    colorscheme default
+endif
+
+hi Cursor guifg=Black guibg=White 
+"设置光标颜色
+
+
+set diffexpr=MyDiff()
+function MyDiff()
+  let opt = '-a --binary '
+  if &diffopt =~ 'icase' | let opt = opt . '-i ' | endif
+  if &diffopt =~ 'iwhite' | let opt = opt . '-b ' | endif
+  let arg1 = v:fname_in
+  if arg1 =~ ' ' | let arg1 = '"' . arg1 . '"' | endif
+  let arg2 = v:fname_new
+  if arg2 =~ ' ' | let arg2 = '"' . arg2 . '"' | endif
+  let arg3 = v:fname_out
+  if arg3 =~ ' ' | let arg3 = '"' . arg3 . '"' | endif
+  let eq = ''
+  if $VIMRUNTIME =~ ' '
+    if &sh =~ '\<cmd'
+      let cmd = '""' . $VIMRUNTIME . '\diff"'
+      let eq = '"'
+    else
+      let cmd = substitute($VIMRUNTIME, ' ', '" ', '') . '\diff"'
+    endif
+  else
+    let cmd = $VIMRUNTIME . '\diff'
+  endif
+  silent execute '!' . cmd . ' ' . opt . arg1 . ' ' . arg2 . ' > ' . arg3 . eq
+endfunction
+
+"工作目录随文件变
+autocmd BufEnter * cd %:p:h
+
+:au BufNewFile,BufRead *.boo setf boo
+:au BufNewFile,BufRead *.cshtml setf html
+
+:autocmd BufRead,BufNewFile *makefile,Makefile set noexpandtab
+
+:autocmd BufRead,BufNewFile *.cmake,CMakeLists.txt,*.cmake.in runtime! indent/cmake.vim 
+:autocmd BufRead,BufNewFile *.cmake,CMakeLists.txt,*.cmake.in setf cmake
+
+:autocmd BufRead,BufNewFile *.clj  map <F5> :w<CR>:!clojure %<CR>
+
+:autocmd BufRead,BufNewFile *.py map <F5> :w<CR>:!python %<CR>
+:autocmd BufRead,BufNewFile *.py set expandtab 
+:autocmd BufRead,BufNewFile *.rb set tabstop=4
+:autocmd BufRead,BufNewFile *.rb set shiftwidth=4
+
+:autocmd BufRead,BufNewFile *.rb  map <F5> :w<CR>:!ruby %<CR>
+:autocmd BufRead,BufNewFile *.rb set expandtab
+:autocmd BufRead,BufNewFile *.rb set tabstop=2
+:autocmd BufRead,BufNewFile *.rb set shiftwidth=2
+
+:autocmd BufRead,BufNewFile *.di,*.apd setfiletype d
+:autocmd BufRead,BufNewFile *.d  map <F5> :w<CR>:!dmd -J. -debug -run %<CR>
+
+:autocmd BufRead,BufNewFile *.hs,*.lhs map <F5> :w<CR>:!runghc %<CR>
+
+if has("win32")
+    :autocmd BufRead,BufNewFile *.c,*.cpp,*.cxx,*.cc  map <F5> :wa<CR>:!gcc -lstdc++ -o %< %<CR> :!%<.exe<CR>
+else
+    :autocmd BufRead,BufNewFile *.c,*.cpp,*.cxx,*.cc  map <F5> :wa<CR>:!gcc -lstdc++ -o %< %<CR> :!./%<<CR>
+endif
+
+:autocmd BufRead,BufNewFile Rakefile,rakefile,Rakefile.rb,rakefile.rb map <F5> :w<CR>:!rake<CR>
+:autocmd BufRead,BufNewFile Rantfile,rantfile setfiletype ruby
+
+:autocmd BufRead,BufNewFile *.dot map <F5> :w<CR>:!dot -Tsvg -o %<.svg % && start %<.svg<CR>
+
